@@ -212,17 +212,29 @@
             return; 
         }
 
-        // Calculate safe boundaries
-        const padding = 20;
+        // Primero actualizamos el texto para que tome su nuevo tamaño
+        if (index < phrases.length) {
+            noBtn.innerText = phrases[index];
+            index++;
+        }
+
+        // Si es la primera vez que se mueve, lo pasamos a position fixed en su lugar exacto
+        if (noBtn.style.position !== 'fixed') {
+            const rect = noBtn.getBoundingClientRect();
+            noBtn.style.left = rect.left + 'px';
+            noBtn.style.top = rect.top + 'px';
+            noBtn.style.position = 'fixed';
+            noBtn.style.margin = '0';
+        }
+
+        // Calculamos los límites seguros usando el nuevo tamaño del botón
+        const padding = 30; // Margen de seguridad con los bordes
         const maxX = window.innerWidth - noBtn.offsetWidth - padding;
         const maxY = window.innerHeight - noBtn.offsetHeight - padding;
         
-        // Random position
+        // Generamos nueva posición aleatoria
         const newX = Math.max(padding, Math.random() * maxX);
         const newY = Math.max(padding, Math.random() * maxY);
-        
-        // Ensure the button is removed from the flex flow for absolute positioning to work smoothly everywhere
-        noBtn.style.position = 'fixed';
         
         gsap.to(noBtn, { 
             left: newX + 'px', 
@@ -230,11 +242,6 @@
             duration: 0.3,
             ease: "power2.out"
         });
-        
-        if (index < phrases.length) {
-            noBtn.innerText = phrases[index];
-            index++;
-        }
     });
 </script>
 </body>
