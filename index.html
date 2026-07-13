@@ -192,6 +192,7 @@
     let index = 0;
     let intentos = 0;
     let isMoving = false;
+    const buttonsArea = document.querySelector('.buttons');
 
     // Si dice que SÍ
     yesBtn.addEventListener('click', () => {
@@ -237,35 +238,49 @@
         }
     });
 
-    // El botón "No" se escapa (lógica simple y directa)
-    noBtn.addEventListener('mouseenter', () => {
-        if (intentos < 5) {
-            // Mover el botón a una posición aleatoria dentro del contenedor
-            const mainBox = document.getElementById('mainBox');
-            const maxX = mainBox.clientWidth - noBtn.offsetWidth - 15;
-            const maxY = mainBox.clientHeight - noBtn.offsetHeight - 15;
+    const moveNoButton = () => {
+        if (intentos >= 5 || isMoving) return;
 
-            const randomX = Math.max(10, Math.random() * maxX);
-            const randomY = Math.max(10, Math.random() * maxY);
+        isMoving = true;
+        const safePadding = 12;
+        const maxX = Math.max(safePadding, buttonsArea.clientWidth - noBtn.offsetWidth - safePadding);
+        const maxY = Math.max(safePadding, buttonsArea.clientHeight - noBtn.offsetHeight - safePadding);
 
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
-            noBtn.style.margin = '0';
-            
-            // Mostrar texto de pie
-            footerText.style.opacity = 1;
-            if (index < phrases.length) {
-                footerText.innerText = phrases[index];
-                index++;
-            }
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
 
-            intentos++;
-        } else {
-            // Límite alcanzado: el botón ya no se mueve
-            noBtn.style.position = 'static';
-            footerText.style.opacity = 1;
-            footerText.innerText = "Bueno, dale click si de verdad quieres...";
+        noBtn.style.position = 'absolute';
+        noBtn.style.left = `${Math.round(randomX)}px`;
+        noBtn.style.top = `${Math.round(randomY)}px`;
+        noBtn.style.margin = '0';
+
+        footerText.style.opacity = 1;
+        if (index < phrases.length) {
+            footerText.innerText = phrases[index];
+            index++;
+        }
+
+        intentos++;
+        setTimeout(() => {
+            isMoving = false;
+        }, 80);
+    };
+
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    noBtn.addEventListener('pointerenter', moveNoButton);
+
+    const resetNoButton = () => {
+        noBtn.style.position = 'static';
+        noBtn.style.left = '';
+        noBtn.style.top = '';
+        noBtn.style.margin = '';
+        footerText.style.opacity = 1;
+        footerText.innerText = "Bueno, dale click si de verdad quieres...";
+    };
+
+    noBtn.addEventListener('click', () => {
+        if (intentos >= 5) {
+            resetNoButton();
         }
     });
 </script>
