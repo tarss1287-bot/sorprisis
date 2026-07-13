@@ -28,6 +28,7 @@
             max-width: 450px;
             width: 90%;
             z-index: 10;
+            position: relative;
         }
         h1 {
             color: #7b6d70;
@@ -159,7 +160,7 @@
         "¿Segura segura?"
     ];
     let index = 0;
-    let noAttempts = 0;
+    let intentos = 0;
     let isMoving = false;
 
     // Si dice que SÍ
@@ -188,7 +189,7 @@
 
     // Si finalmente hace clic en NO
     noBtn.addEventListener('click', () => {
-        if (noAttempts >= 5) {
+        if (intentos >= 5) {
             gsap.to(askContent, {
                 opacity: 0,
                 scale: 0.9,
@@ -208,61 +209,54 @@
 
     // El botón "No" se escapa
     noBtn.addEventListener('mouseenter', () => {
-        if (isMoving) return; // Evita conteos múltiples mientras se mueve
+        if (isMoving) return;
         
-        noAttempts++;
-        
-        // Mostrar texto de pie
-        footerText.style.opacity = 1;
-        
-        if (index < phrases.length) {
-            footerText.innerText = phrases[index];
-            index++;
-        }
-        
-        // Si ya intentó 5 veces, dejamos que lo presione
-        if (noAttempts > 5) {
-            footerText.innerText = "Bueno, dale click si de verdad quieres...";
-            return; 
-        }
-
-        isMoving = true;
-
-        // Convertir a fixed para mover
-        if (noBtn.style.position !== 'fixed') {
-            const rect = noBtn.getBoundingClientRect();
-            noBtn.style.left = rect.left + 'px';
-            noBtn.style.top = rect.top + 'px';
-            noBtn.style.position = 'fixed';
-            noBtn.style.margin = '0';
-        }
-
-        // Calculamos posición más cercana
-        const rect = noBtn.getBoundingClientRect();
-        const jumpDistance = 100 + Math.random() * 80; 
-        const angle = Math.random() * Math.PI * 2;
-        
-        let newX = rect.left + Math.cos(angle) * jumpDistance;
-        let newY = rect.top + Math.sin(angle) * jumpDistance;
-
-        const padding = 30;
-        const maxX = window.innerWidth - noBtn.offsetWidth - padding;
-        const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-        
-        if (newX < padding) newX = padding + 50;
-        if (newX > maxX) newX = maxX - 50;
-        if (newY < padding) newY = padding + 50;
-        if (newY > maxY) newY = maxY - 50;
-        
-        gsap.to(noBtn, { 
-            left: newX + 'px', 
-            top: newY + 'px', 
-            duration: 0.2,
-            ease: "power2.out",
-            onComplete: () => {
-                isMoving = false;
+        if (intentos < 5) {
+            intentos++;
+            
+            // Mostrar texto de pie
+            footerText.style.opacity = 1;
+            if (index < phrases.length) {
+                footerText.innerText = phrases[index];
+                index++;
             }
-        });
+
+            isMoving = true;
+            const mainBox = document.getElementById('mainBox');
+
+            // Convertir a position absolute relativa al contenedor principal
+            if (noBtn.style.position !== 'absolute') {
+                const boxRect = mainBox.getBoundingClientRect();
+                const btnRect = noBtn.getBoundingClientRect();
+                
+                noBtn.style.position = 'absolute';
+                noBtn.style.left = (btnRect.left - boxRect.left) + 'px';
+                noBtn.style.top = (btnRect.top - boxRect.top) + 'px';
+                noBtn.style.margin = '0';
+            }
+
+            // Generar posición aleatoria DENTRO del contenedor principal
+            const padding = 15;
+            const maxX = mainBox.clientWidth - noBtn.offsetWidth - padding;
+            const maxY = mainBox.clientHeight - noBtn.offsetHeight - padding;
+            
+            const newX = Math.max(padding, Math.random() * maxX);
+            const newY = Math.max(padding, Math.random() * maxY);
+            
+            gsap.to(noBtn, { 
+                left: newX + 'px', 
+                top: newY + 'px', 
+                duration: 0.25,
+                ease: "power2.out",
+                onComplete: () => {
+                    isMoving = false;
+                }
+            });
+        } else {
+            // Condición de límite (5 intentos)
+            footerText.style.opacity = 1;
+            footerText.innerText = "Bueno, dale click si de verdad quieres...";
+        }
     });
 </script>
 </body>
