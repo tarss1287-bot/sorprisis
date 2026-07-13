@@ -114,7 +114,7 @@
         <h1>¿Quieres salir conmigo? <span class="heart">❤️</span></h1>
         
         <div class="gif-container">
-            <img src="https://media1.tenor.com/m/Z_R200wBupAAAAAC/bubu-dudu.gif" alt="Ositos">
+            <img src="https://tse3.mm.bing.net/th/id/OIP.4_-TxTsQUu1Ggg_FwL1VigHaHH?r=0&pid=Api&h=220&P=0" alt="Ositos">
         </div>
 
         <div class="buttons">
@@ -130,7 +130,7 @@
     <div id="success-content" class="success-content">
         <h1>¡Gooo! Vamos a ver una peli 🎬 <span class="heart">❤️</span></h1>
         <div class="gif-container">
-            <img src="https://media1.tenor.com/m/40wQy2-U62IAAAAC/tkthao219-bubududu.gif" alt="Ositos caminando">
+            <img src="https://tse3.mm.bing.net/th/id/OIP.XBaYYScp6qsbnar9gYGu4wHaHa?r=0&pid=Api&h=220&P=0" alt="Ositos caminando">
         </div>
         <p>¡Espero que estés emocionada como yo! nos vemos en la tarde</p>
     </div>
@@ -160,6 +160,7 @@
     ];
     let index = 0;
     let noAttempts = 0;
+    let isMoving = false;
 
     // Si dice que SÍ
     yesBtn.addEventListener('click', () => {
@@ -206,7 +207,9 @@
     });
 
     // El botón "No" se escapa
-    noBtn.addEventListener('mouseover', () => {
+    noBtn.addEventListener('mouseenter', () => {
+        if (isMoving) return; // Evita conteos múltiples mientras se mueve
+        
         noAttempts++;
         
         // Mostrar texto de pie
@@ -222,6 +225,8 @@
             footerText.innerText = "Bueno, dale click si de verdad quieres...";
             return; 
         }
+
+        isMoving = true;
 
         // Convertir a fixed para mover
         if (noBtn.style.position !== 'fixed') {
@@ -253,7 +258,10 @@
             left: newX + 'px', 
             top: newY + 'px', 
             duration: 0.2,
-            ease: "power2.out"
+            ease: "power2.out",
+            onComplete: () => {
+                isMoving = false;
+            }
         });
     });
 </script>
