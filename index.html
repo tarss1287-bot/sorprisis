@@ -155,6 +155,7 @@
         "Anda di que sí 🥺"
     ];
     let index = 0;
+    let noAttempts = 0;
 
     // Si dice que SÍ
     yesBtn.addEventListener('click', () => {
@@ -181,8 +182,36 @@
         });
     });
 
+    // Si finalmente hace clic en NO (después de 5 intentos)
+    noBtn.addEventListener('click', () => {
+        if (noAttempts >= 5) {
+            gsap.to(askContent, {
+                opacity: 0,
+                scale: 0.8,
+                duration: 0.4,
+                onComplete: () => {
+                    askContent.style.display = 'none';
+                    successContent.innerHTML = "<h1>Bueno, si no quieres, no 🥺</h1><p>Igual te quiero, vvsita</p><div style='font-size: 5rem; margin-top: 10px;'>💔</div>";
+                    successContent.style.display = 'flex';
+                    gsap.fromTo(successContent, 
+                        { opacity: 0, scale: 0.8 }, 
+                        { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.5)" }
+                    );
+                }
+            });
+        }
+    });
+
     // El botón "No" se escapa
     noBtn.addEventListener('mouseover', () => {
+        noAttempts++;
+        
+        // Si ya intentó 5 veces, dejamos que lo presione
+        if (noAttempts > 5) {
+            noBtn.innerText = "Bueno, dale click...";
+            return; 
+        }
+
         // Calculate safe boundaries
         const padding = 20;
         const maxX = window.innerWidth - noBtn.offsetWidth - padding;
