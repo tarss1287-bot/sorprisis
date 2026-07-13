@@ -196,7 +196,7 @@
                 duration: 0.3,
                 onComplete: () => {
                     askContent.style.display = 'none';
-                    successContent.innerHTML = "<h1>Bueno, está bien, de toda maneras ni me querias🥺</h1><div class='gif-container'><img src='https://tse1.mm.bing.net/th/id/OIP.WNQ6I4EhfhpBcCHn7pVaOQHaHa?r=0&pid=Api&h=220&P=0' alt='sad'></div><p>Igual te quiero...</p>";
+                    successContent.innerHTML = "<h1>Bueno, está bien, de toda maneras me la debes🥺</h1><div class='gif-container'><img src='https://tse1.mm.bing.net/th/id/OIP.WNQ6I4EhfhpBcCHn7pVaOQHaHa?r=0&pid=Api&h=220&P=0' alt='sad'></div><p>Igual te quiero...</p>";
                     successContent.style.display = 'flex';
                     gsap.fromTo(successContent, 
                         { opacity: 0, scale: 0.9 }, 
@@ -207,12 +207,21 @@
         }
     });
 
-    // El botón "No" se escapa
+    // El botón "No" se escapa (lógica simple y directa)
     noBtn.addEventListener('mouseenter', () => {
-        if (isMoving) return;
-        
         if (intentos < 5) {
-            intentos++;
+            // Mover el botón a una posición aleatoria dentro del contenedor
+            const mainBox = document.getElementById('mainBox');
+            const maxX = mainBox.clientWidth - noBtn.offsetWidth - 15;
+            const maxY = mainBox.clientHeight - noBtn.offsetHeight - 15;
+
+            const randomX = Math.max(10, Math.random() * maxX);
+            const randomY = Math.max(10, Math.random() * maxY);
+
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+            noBtn.style.margin = '0';
             
             // Mostrar texto de pie
             footerText.style.opacity = 1;
@@ -221,39 +230,10 @@
                 index++;
             }
 
-            isMoving = true;
-            const mainBox = document.getElementById('mainBox');
-
-            // Convertir a position absolute relativa al contenedor principal
-            if (noBtn.style.position !== 'absolute') {
-                const boxRect = mainBox.getBoundingClientRect();
-                const btnRect = noBtn.getBoundingClientRect();
-                
-                noBtn.style.position = 'absolute';
-                noBtn.style.left = (btnRect.left - boxRect.left) + 'px';
-                noBtn.style.top = (btnRect.top - boxRect.top) + 'px';
-                noBtn.style.margin = '0';
-            }
-
-            // Generar posición aleatoria DENTRO del contenedor principal
-            const padding = 15;
-            const maxX = mainBox.clientWidth - noBtn.offsetWidth - padding;
-            const maxY = mainBox.clientHeight - noBtn.offsetHeight - padding;
-            
-            const newX = Math.max(padding, Math.random() * maxX);
-            const newY = Math.max(padding, Math.random() * maxY);
-            
-            gsap.to(noBtn, { 
-                left: newX + 'px', 
-                top: newY + 'px', 
-                duration: 0.25,
-                ease: "power2.out",
-                onComplete: () => {
-                    isMoving = false;
-                }
-            });
+            intentos++;
         } else {
-            // Condición de límite (5 intentos)
+            // Límite alcanzado: el botón ya no se mueve
+            noBtn.style.position = 'static';
             footerText.style.opacity = 1;
             footerText.innerText = "Bueno, dale click si de verdad quieres...";
         }
