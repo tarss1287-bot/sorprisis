@@ -15,12 +15,29 @@
             justify-content: center; 
             height: 100vh; 
             font-family: 'Nunito', sans-serif; 
-            background-image: url('https://tse3.mm.bing.net/th/id/OIP.Okm4Naqrw6vr8UVy_OEx6AHaE8?r=0&pid=Api&h=220&P=0');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background: linear-gradient(-45deg, #f8a5c2, #f7d6e0, #c9b8f4, #a8d8ea);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
             overflow: hidden;
             position: relative;
+        }
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Corazones flotantes decorativos */
+        .heart-bg {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.15;
+            animation: floatUp linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes floatUp {
+            0%   { transform: translateY(110vh) rotate(0deg); opacity: 0.15; }
+            100% { transform: translateY(-10vh) rotate(20deg); opacity: 0; }
         }
         .container { 
             background: #f1f3f4; 
@@ -113,6 +130,15 @@
     </style>
 </head>
 <body>
+
+<!-- Corazones flotantes de fondo -->
+<div class="heart-bg" style="left:5%;  animation-duration:7s;  animation-delay:0s;">💖</div>
+<div class="heart-bg" style="left:15%; animation-duration:9s;  animation-delay:1s;">🩷</div>
+<div class="heart-bg" style="left:30%; animation-duration:6s;  animation-delay:3s;">💕</div>
+<div class="heart-bg" style="left:50%; animation-duration:8s;  animation-delay:0.5s;">💗</div>
+<div class="heart-bg" style="left:65%; animation-duration:10s; animation-delay:2s;">💖</div>
+<div class="heart-bg" style="left:80%; animation-duration:7s;  animation-delay:4s;">🩷</div>
+<div class="heart-bg" style="left:90%; animation-duration:9s;  animation-delay:1.5s;">💕</div>
 
 <div class="container" id="mainBox">
     <div id="ask-content">
